@@ -33,9 +33,9 @@ const (
 type ProductServiceClient interface {
 	Create(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*Product, error)
 	GetById(ctx context.Context, in *ProductPKey, opts ...grpc.CallOption) (*Product, error)
-	GetAll(ctx context.Context, in *GetProductListRequest, opts ...grpc.CallOption) (*GetProductListResponse, error)
+	GetAll(ctx context.Context, in *GetAllProductsRequest, opts ...grpc.CallOption) (*GetAllProductsResponse, error)
 	Delete(ctx context.Context, in *ProductPKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Update(ctx context.Context, in *ProductPKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Update(ctx context.Context, in *UpdateProduct, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type productServiceClient struct {
@@ -64,8 +64,8 @@ func (c *productServiceClient) GetById(ctx context.Context, in *ProductPKey, opt
 	return out, nil
 }
 
-func (c *productServiceClient) GetAll(ctx context.Context, in *GetProductListRequest, opts ...grpc.CallOption) (*GetProductListResponse, error) {
-	out := new(GetProductListResponse)
+func (c *productServiceClient) GetAll(ctx context.Context, in *GetAllProductsRequest, opts ...grpc.CallOption) (*GetAllProductsResponse, error) {
+	out := new(GetAllProductsResponse)
 	err := c.cc.Invoke(ctx, ProductService_GetAll_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func (c *productServiceClient) Delete(ctx context.Context, in *ProductPKey, opts
 	return out, nil
 }
 
-func (c *productServiceClient) Update(ctx context.Context, in *ProductPKey, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *productServiceClient) Update(ctx context.Context, in *UpdateProduct, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ProductService_Update_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -97,9 +97,9 @@ func (c *productServiceClient) Update(ctx context.Context, in *ProductPKey, opts
 type ProductServiceServer interface {
 	Create(context.Context, *CreateProductRequest) (*Product, error)
 	GetById(context.Context, *ProductPKey) (*Product, error)
-	GetAll(context.Context, *GetProductListRequest) (*GetProductListResponse, error)
+	GetAll(context.Context, *GetAllProductsRequest) (*GetAllProductsResponse, error)
 	Delete(context.Context, *ProductPKey) (*emptypb.Empty, error)
-	Update(context.Context, *ProductPKey) (*emptypb.Empty, error)
+	Update(context.Context, *UpdateProduct) (*emptypb.Empty, error)
 	mustEmbedUnimplementedProductServiceServer()
 }
 
@@ -113,13 +113,13 @@ func (UnimplementedProductServiceServer) Create(context.Context, *CreateProductR
 func (UnimplementedProductServiceServer) GetById(context.Context, *ProductPKey) (*Product, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetById not implemented")
 }
-func (UnimplementedProductServiceServer) GetAll(context.Context, *GetProductListRequest) (*GetProductListResponse, error) {
+func (UnimplementedProductServiceServer) GetAll(context.Context, *GetAllProductsRequest) (*GetAllProductsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedProductServiceServer) Delete(context.Context, *ProductPKey) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedProductServiceServer) Update(context.Context, *ProductPKey) (*emptypb.Empty, error) {
+func (UnimplementedProductServiceServer) Update(context.Context, *UpdateProduct) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedProductServiceServer) mustEmbedUnimplementedProductServiceServer() {}
@@ -172,7 +172,7 @@ func _ProductService_GetById_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _ProductService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetProductListRequest)
+	in := new(GetAllProductsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -184,7 +184,7 @@ func _ProductService_GetAll_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: ProductService_GetAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServiceServer).GetAll(ctx, req.(*GetProductListRequest))
+		return srv.(ProductServiceServer).GetAll(ctx, req.(*GetAllProductsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -208,7 +208,7 @@ func _ProductService_Delete_Handler(srv interface{}, ctx context.Context, dec fu
 }
 
 func _ProductService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductPKey)
+	in := new(UpdateProduct)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func _ProductService_Update_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: ProductService_Update_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServiceServer).Update(ctx, req.(*ProductPKey))
+		return srv.(ProductServiceServer).Update(ctx, req.(*UpdateProduct))
 	}
 	return interceptor(ctx, in, info, handler)
 }

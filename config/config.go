@@ -52,7 +52,8 @@ func Load() Config {
 	config.Environment = cast.ToString(getOrReturnDefaultValue("ENVIRONMENT", DebugMode))
 	config.Version = cast.ToString(getOrReturnDefaultValue("VERSION", "1.0"))
 
-	config.OrderServiceHost = cast.ToString(getOrReturnDefaultValue("ORDER", "localhost"))
+	config.OrderServiceHost = "localhost"
+
 	config.OrderServicePort = cast.ToString(getOrReturnDefaultValue("ORDER_SERVICE_PORT", ":8080"))
 
 	config.PostgresHost = cast.ToString(getOrReturnDefaultValue("POSTGRES_HOST", "localhost"))

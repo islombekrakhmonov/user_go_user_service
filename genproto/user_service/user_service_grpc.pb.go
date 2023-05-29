@@ -20,11 +20,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserService_Create_FullMethodName  = "/user_service.UserService/Create"
-	UserService_GetById_FullMethodName = "/user_service.UserService/GetById"
-	UserService_GetAll_FullMethodName  = "/user_service.UserService/GetAll"
-	UserService_Delete_FullMethodName  = "/user_service.UserService/Delete"
-	UserService_Update_FullMethodName  = "/user_service.UserService/Update"
+	UserService_Create_FullMethodName     = "/user_service.UserService/Create"
+	UserService_GetById_FullMethodName    = "/user_service.UserService/GetById"
+	UserService_GetAll_FullMethodName     = "/user_service.UserService/GetAll"
+	UserService_Delete_FullMethodName     = "/user_service.UserService/Delete"
+	UserService_Update_FullMethodName     = "/user_service.UserService/Update"
+	UserService_GetByPhone_FullMethodName = "/user_service.UserService/GetByPhone"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -36,6 +37,7 @@ type UserServiceClient interface {
 	GetAll(ctx context.Context, in *GetAllUsersRequest, opts ...grpc.CallOption) (*GetAllUsersResponse, error)
 	Delete(ctx context.Context, in *UserPKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Update(ctx context.Context, in *UserPKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetByPhone(ctx context.Context, in *GetUserByPhoneRequest, opts ...grpc.CallOption) (*GetUserByPhoneResponse, error)
 }
 
 type userServiceClient struct {
@@ -91,6 +93,15 @@ func (c *userServiceClient) Update(ctx context.Context, in *UserPKey, opts ...gr
 	return out, nil
 }
 
+func (c *userServiceClient) GetByPhone(ctx context.Context, in *GetUserByPhoneRequest, opts ...grpc.CallOption) (*GetUserByPhoneResponse, error) {
+	out := new(GetUserByPhoneResponse)
+	err := c.cc.Invoke(ctx, UserService_GetByPhone_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -100,6 +111,7 @@ type UserServiceServer interface {
 	GetAll(context.Context, *GetAllUsersRequest) (*GetAllUsersResponse, error)
 	Delete(context.Context, *UserPKey) (*emptypb.Empty, error)
 	Update(context.Context, *UserPKey) (*emptypb.Empty, error)
+	GetByPhone(context.Context, *GetUserByPhoneRequest) (*GetUserByPhoneResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -121,6 +133,9 @@ func (UnimplementedUserServiceServer) Delete(context.Context, *UserPKey) (*empty
 }
 func (UnimplementedUserServiceServer) Update(context.Context, *UserPKey) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedUserServiceServer) GetByPhone(context.Context, *GetUserByPhoneRequest) (*GetUserByPhoneResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByPhone not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -225,6 +240,24 @@ func _UserService_Update_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetByPhone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByPhoneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetByPhone(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetByPhone_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetByPhone(ctx, req.(*GetUserByPhoneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -251,6 +284,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Update",
 			Handler:    _UserService_Update_Handler,
+		},
+		{
+			MethodName: "GetByPhone",
+			Handler:    _UserService_GetByPhone_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

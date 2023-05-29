@@ -35,7 +35,7 @@ type OrderServiceClient interface {
 	GetById(ctx context.Context, in *OrderPKey, opts ...grpc.CallOption) (*Order, error)
 	GetAll(ctx context.Context, in *GetAllOrdersRequest, opts ...grpc.CallOption) (*GetAllOrdersResponse, error)
 	Delete(ctx context.Context, in *OrderPKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Update(ctx context.Context, in *OrderPKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Update(ctx context.Context, in *UpdateOrderRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type orderServiceClient struct {
@@ -82,7 +82,7 @@ func (c *orderServiceClient) Delete(ctx context.Context, in *OrderPKey, opts ...
 	return out, nil
 }
 
-func (c *orderServiceClient) Update(ctx context.Context, in *OrderPKey, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *orderServiceClient) Update(ctx context.Context, in *UpdateOrderRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, OrderService_Update_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -99,7 +99,7 @@ type OrderServiceServer interface {
 	GetById(context.Context, *OrderPKey) (*Order, error)
 	GetAll(context.Context, *GetAllOrdersRequest) (*GetAllOrdersResponse, error)
 	Delete(context.Context, *OrderPKey) (*emptypb.Empty, error)
-	Update(context.Context, *OrderPKey) (*emptypb.Empty, error)
+	Update(context.Context, *UpdateOrderRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -119,7 +119,7 @@ func (UnimplementedOrderServiceServer) GetAll(context.Context, *GetAllOrdersRequ
 func (UnimplementedOrderServiceServer) Delete(context.Context, *OrderPKey) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedOrderServiceServer) Update(context.Context, *OrderPKey) (*emptypb.Empty, error) {
+func (UnimplementedOrderServiceServer) Update(context.Context, *UpdateOrderRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
@@ -208,7 +208,7 @@ func _OrderService_Delete_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 func _OrderService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(OrderPKey)
+	in := new(UpdateOrderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func _OrderService_Update_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: OrderService_Update_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServiceServer).Update(ctx, req.(*OrderPKey))
+		return srv.(OrderServiceServer).Update(ctx, req.(*UpdateOrderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
